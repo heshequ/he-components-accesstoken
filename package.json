@@ -1,6 +1,6 @@
 {
   "name": "he-components-wetoken",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/main.js",
   "scripts": {
@@ -12,13 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "he-date-format": "^0.0.1",
     "he-mysql": "^0.0.6",
-    "he-sheet": "0.0.1",
-    "koa": "^2.0.0-alpha.7",
-    "koa-better-body": "^3.0.2",
-    "koa-cors": "^0.0.16",
-    "koa-router": "^7.0.1",
+    "jssha": "^2.2.0",
     "lodash": "^4.16.4",
     "mysql": "^2.11.1",
     "request": "^2.79.0"
