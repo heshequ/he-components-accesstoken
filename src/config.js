@@ -8,7 +8,7 @@ const MYSQL_DATABASE = {
     host: 'localhost',
     user: 'root',
     password: 'Ac591234',
-    database: 'access_token'
+    database: 'he_wetoken'
   }
 }
 

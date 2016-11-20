@@ -1,8 +1,8 @@
 {
-  "name": "hesq-restful",
-  "version": "1.0.0",
+  "name": "he-components-wetoken",
+  "version": "0.0.1",
   "description": "",
-  "main": "main.js",
+  "main": "dist/main.js",
   "scripts": {
     "dev": "gulp watch",
     "build": "gulp babel",

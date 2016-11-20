@@ -3,6 +3,50 @@ const mysql = require('he-mysql')
 const request = require('request')
 
 /**
+ * 配置项，token和ticket可以使用的秒数
+ */
+const seconds = 5400
+
+/**
+ * 获取accesstoken的包装方法
+ */
+var getToken = function (db, appid, secret) {
+  return new Promise(function(resolve, reject) {
+    getAccessToken(db, appid, secret).then(
+      function (token) {
+        resolve(token)
+      },
+      function (err) {
+        reject(err)
+      }
+    )
+  })
+}
+
+/**
+ * 获取jsapiticket的包装方法
+ */
+var getTicket = function (token) {
+  return new Promise(function(resolve, reject) {
+    getJSApiTicket(token).then(
+      function (ticket) {
+        resolve(ticket)
+      },
+      function (err) {
+        reject(err)
+      }
+    )
+  })
+}
+
+/**
+ * 取10位时间戳
+ */
+var getTime = function () {
+  return _.now().toString().substr(0,10)
+}
+
+/**
  * request promise
  */
 var http = function (url) {
@@ -23,25 +67,22 @@ var http = function (url) {
  * @param String secret 微信公众号的appsecret
  */
 var getAccessToken = async function (db, appid, secret) {
-  let time = _.now().toString().substr(0,10)
+  // 取时间戳，数据  
+  let time = getTime()
+  let data = await mysql.query(db, ['select * from `token` where id=1'], null)
 
-  //先判断当前的accesstoken是否超过1.5小时
-  let tokendata = await mysql.query(db, ['select * from `token` where id=1'], null)
-  if (time-5400 > tokendata[0][0].time) {
+  // 根据是否存在有效缓存进行操作
+  if (time - seconds > data[0][0].time) {
     try {
       let body = await http('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appid + '&secret=' + secret)
-
-      // 注意，返回的是字符串，要转换成json
       body = JSON.parse(body)
-
-      // 存库，返回
       await mysql.query(db, ['update `token` set `token`=?, `time`=? where id=1'], [body.access_token, time])
       return body.access_token
     } catch (err) {
       throw err
     }
   } else {
-    return tokendata[0][0].token
+    return data[0][0].token
   }
 }
 
@@ -49,18 +90,27 @@ var getAccessToken = async function (db, appid, secret) {
  * 取api_ticket
  * @param String accesstoken 连接mysql数据库时的配置项
  */
-var getJSApiTicket = async function (accesstoken) {
-  let body = await http('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' + accesstoken + '&type=wx_card')
+var getJSApiTicket = async function (db, token) {
+  let time = getTime()
+  let data = await mysql.query(db, ['select * from `ticket` where id=1'], null)
 
-  // 注意，返回的是字符串，要转换成json
-  body = JSON.parse(body)
-
-  // 返回
-  return body.ticket
+  // 根据是否存在有效缓存进行操作
+  if (time - seconds > data[0][0].time) {
+    try {
+      let body = await http('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' + token + '&type=wx_card')
+      body = JSON.parse(body)
+      await mysql.query(db, ['update `ticket` set `ticket`=?, `time`=? where id=1'], [body.ticket, time])
+      return body.ticket
+    } catch (err) {
+      throw err
+    }
+  } else {
+    return data[0][0].ticket
+  }
 }
 
 /**
  * 导出
  */
-exports.getAccessToken = getAccessToken
-exports.getJSApiTicket = getJSApiTicket
+exports.getToken = getToken
+exports.getTicket = getTicket
