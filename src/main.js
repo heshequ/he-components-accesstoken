@@ -22,13 +22,19 @@ var http = function (url) {
  * @param String appid 微信公众号的appid
  * @param String secret 微信公众号的appsecret
  */
-async function getAccessToken (db, appid, secret) {
+var getAccessToken = async function (db, appid, secret) {
   let time = _.now().toString().substr(0,10)
+
   //先判断当前的accesstoken是否超过1.5小时
   let tokendata = await mysql.query(db, ['select * from `token` where id=1'], null)
   if (time-5400 > tokendata[0][0].time) {
     try {
       let body = await http('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appid + '&secret=' + secret)
+
+      // 注意，返回的是字符串，要转换成json
+      body = JSON.parse(body)
+
+      // 存库，返回
       await mysql.query(db, ['update `token` set `token`=?, `time`=? where id=1'], [body.access_token, time])
       return body.access_token
     } catch (err) {
@@ -43,7 +49,18 @@ async function getAccessToken (db, appid, secret) {
  * 取api_ticket
  * @param String accesstoken 连接mysql数据库时的配置项
  */
-function getJSApiTicket (accesstoken) {
-  let body = http('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' + accesstoken + '&type=wx_card')
-  return body
+var getJSApiTicket = async function (accesstoken) {
+  let body = await http('https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=' + accesstoken + '&type=wx_card')
+
+  // 注意，返回的是字符串，要转换成json
+  body = JSON.parse(body)
+
+  // 返回
+  return body.ticket
 }
+
+/**
+ * 导出
+ */
+exports.getAccessToken = getAccessToken
+exports.getJSApiTicket = getJSApiTicket

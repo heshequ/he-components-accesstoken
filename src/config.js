@@ -5,9 +5,9 @@ const mysql = require('mysql')
  */
 const MYSQL_DATABASE = {
   TOKEN: {
-    host: 'mysql.rdsm2glams7fhd5.rds.bj.baidubce.com',
-    user: 'zdboy',
-    password: '123456',
+    host: 'localhost',
+    user: 'root',
+    password: 'Ac591234',
     database: 'access_token'
   }
 }
