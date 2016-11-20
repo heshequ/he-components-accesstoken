@@ -1,0 +1,46 @@
+{
+  "name": "hesq-restful",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "dev": "gulp watch",
+    "build": "gulp babel",
+    "lint": "gulp lint",
+    "test": "mocha test/unit/**/*.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "he-date-format": "^0.0.1",
+    "he-mysql": "^0.0.6",
+    "he-sheet": "0.0.1",
+    "koa": "^2.0.0-alpha.7",
+    "koa-better-body": "^3.0.2",
+    "koa-cors": "^0.0.16",
+    "koa-router": "^7.0.1",
+    "lodash": "^4.16.4",
+    "mysql": "^2.11.1",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-eslint": "^7.0.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-stage-3": "^6.11.0",
+    "benchmark": "^2.1.1",
+    "chai": "^3.5.0",
+    "eslint": "^3.6.1",
+    "eslint-config-standard": "^6.1.0",
+    "eslint-friendly-formatter": "^2.0.5",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-html": "^1.3.0",
+    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-standard": "^2.0.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "mocha": "^3.1.2"
+  }
+}
